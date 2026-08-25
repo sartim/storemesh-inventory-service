@@ -1,4 +1,4 @@
-module storemesh-inventory-service
+module github.com/sartim/storemesh-inventory-service
 
 go 1.26.6
 

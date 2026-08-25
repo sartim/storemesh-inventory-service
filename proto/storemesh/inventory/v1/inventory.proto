@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package storemesh.inventory.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "storemesh-inventory-service/gen/storemesh/inventory/v1;inventoryv1";
+
+service InventoryService {
+  rpc GetStock(GetStockRequest) returns (GetStockResponse) {
+    option (google.api.http) = { get: "/v1/inventory/{product_id}" };
+  }
+
+  rpc AdjustStock(AdjustStockRequest) returns (AdjustStockResponse) {
+    option (google.api.http) = { post: "/v1/inventory/{product_id}:adjust" body: "adjustment" };
+  }
+
+  rpc ReserveStock(ReserveStockRequest) returns (ReserveStockResponse) {
+    option (google.api.http) = { post: "/v1/inventory/{product_id}:reserve" body: "reservation" };
+  }
+
+  rpc ReleaseReservation(ReleaseReservationRequest) returns (ReleaseReservationResponse) {
+    option (google.api.http) = { post: "/v1/inventory/{product_id}:release" body: "reservation" };
+  }
+}
+
+message Stock {
+  string product_id = 1;
+  int64 on_hand = 2;
+  int64 reserved = 3;
+  int64 available = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message GetStockRequest { string product_id = 1; }
+message GetStockResponse { Stock stock = 1; }
+
+message StockAdjustment {
+  int64 quantity_delta = 1;
+  string reason = 2;
+}
+
+message AdjustStockRequest {
+  string product_id = 1;
+  StockAdjustment adjustment = 2;
+}
+message AdjustStockResponse { Stock stock = 1; }
+
+message StockReservation {
+  string reservation_id = 1;
+  int64 quantity = 2;
+}
+
+message ReserveStockRequest {
+  string product_id = 1;
+  StockReservation reservation = 2;
+}
+message ReserveStockResponse { Stock stock = 1; }
+
+message ReleaseReservationRequest {
+  string product_id = 1;
+  StockReservation reservation = 2;
+}
+message ReleaseReservationResponse { Stock stock = 1; }

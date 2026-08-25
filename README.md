@@ -6,4 +6,6 @@ Inventory but do not mutate its data directly.
 
 The initial protobuf contract defines stock reads, stock adjustments, and
 reservation/release operations. Runtime implementation, persistence, and
-deployment follow after contract review.
+deployment follow after contract review. The initial PostgreSQL schema is
+available in `migrations/001_inventory.sql`; reservation rows are linked to
+stock rows and enforce positive quantities.

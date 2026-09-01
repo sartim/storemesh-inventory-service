@@ -8,6 +8,7 @@ import (
 	inventoryv1 "github.com/sartim/storemesh-inventory-service/gen/storemesh/inventory/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -100,4 +101,6 @@ func (i *Inventory) ensure(productID string) *inventoryv1.Stock {
 	return stock
 }
 
-func clone(stock *inventoryv1.Stock) *inventoryv1.Stock { copy := *stock; return &copy }
+func clone(stock *inventoryv1.Stock) *inventoryv1.Stock {
+	return proto.Clone(stock).(*inventoryv1.Stock)
+}

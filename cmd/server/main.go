@@ -9,6 +9,7 @@ import (
 	"time"
 
 	inventoryv1 "github.com/sartim/storemesh-inventory-service/gen/storemesh/inventory/v1"
+	"github.com/sartim/storemesh-inventory-service/internal/auth"
 	"github.com/sartim/storemesh-inventory-service/internal/observability"
 	"github.com/sartim/storemesh-inventory-service/internal/repository"
 	"github.com/sartim/storemesh-inventory-service/internal/service"
@@ -21,7 +22,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	server := grpc.NewServer()
+	oidc, err := auth.NewValidator(os.Getenv("KEYCLOAK_ISSUER"), os.Getenv("KEYCLOAK_AUDIENCE"))
+	if err != nil {
+		log.Fatalf("configure Keycloak OIDC: %v", err)
+	}
+	server := grpc.NewServer(grpc.UnaryInterceptor(auth.UnaryInterceptor(oidc)))
 	go serveMetrics(env("METRICS_ADDR", ":8080"))
 	if databaseURL := os.Getenv("DATABASE_URL"); databaseURL != "" {
 		store, err := repository.Open(context.Background(), databaseURL)

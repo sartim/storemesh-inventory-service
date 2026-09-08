@@ -13,7 +13,8 @@ stock rows and enforce positive quantities.
 ## Run locally without Docker or Kubernetes
 
 Requires Go 1.26.6 or newer. With no `DATABASE_URL`, the service uses its
-in-memory store, which is useful for contract and service development:
+in-memory store, which is useful for contract and service development. Run the
+process from this repository:
 
 ```sh
 go run ./cmd/server
